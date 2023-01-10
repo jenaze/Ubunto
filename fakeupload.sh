@@ -1,10 +1,12 @@
 #!/bin/bash
 ##################### Ftp Section ######################
-### */5 * * * * /dl/1/fakeupload.sh >> /dl/1/my.log 2>&1
+## bash <(curl -Ls https://raw.githubusercontent.com/jenaze/Ubunto/master/fakeupload.sh)
+## chmod +x fakeupload.sh
+## */2 * * * * /dl/1/fakeupload.sh >> /dl/1/my.log 2>&1
 
 addr=217.144.107.50
 username=sid@novinlike.ir
-password=xxxxxxx
+password=mHm09350912
 
 ##################### File Section ######################
 name=$RANDOM
@@ -36,3 +38,4 @@ curl --limit-rate $uploadspeed -T /dl/1/$name.zip ftp://$addr --user $username:$
 curl -v -u $username:$password ftp://$addr -Q 'DELE '$name'.zip' &> /dev/null
 rm -rf $name.zip
 echo "Done"
+echo ""
