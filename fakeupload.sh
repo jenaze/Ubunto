@@ -1,5 +1,6 @@
 #!/bin/bash
 ##################### Ftp Section ######################
+## wget https://raw.githubusercontent.com/jenaze/Ubunto/master/fakeupload.sh
 ## bash <(curl -Ls https://raw.githubusercontent.com/jenaze/Ubunto/master/fakeupload.sh)
 ## chmod +x fakeupload.sh
 ## */2 * * * * /dl/1/fakeupload.sh >> /dl/1/my.log 2>&1
