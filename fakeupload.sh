@@ -1,5 +1,7 @@
-
+#!/bin/bash
 ##################### Ftp Section ######################
+### */5 * * * * /dl/1/fakeupload.sh >> /dl/1/my.log 2>&1
+
 addr=217.144.107.50
 username=sid@novinlike.ir
 password=xxxxxxx
