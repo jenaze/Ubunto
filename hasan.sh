@@ -1,3 +1,5 @@
+## bash <(curl -Ls https://raw.githubusercontent.com/jenaze/Ubunto/master/hasan.sh)
+
 #sudo sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 #sudo passwd root
 
