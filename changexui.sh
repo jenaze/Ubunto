@@ -1,3 +1,4 @@
+## bash <(curl -Ls https://raw.githubusercontent.com/jenaze/Ubunto/master/changexui.sh)
 REQUIRED_PKG="sqlite3"
 PKG_OK=$(dpkg-query -W --showformat='${Status}\n' $REQUIRED_PKG|grep "install ok installed")
 #echo Checking for $REQUIRED_PKG: $PKG_OK
