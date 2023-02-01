@@ -5,7 +5,7 @@
 echo -e "\033[33mSelect server \033[0m"
 echo -e "\033[36m 1)\033[37m Irancell \033[0m"
 echo -e "\033[36m 2)\033[37m Mci \033[0m"
-echo -e "\033[36m 2)\033[37m Rightel \033[0m"
+echo -e "\033[36m 3)\033[37m Rightel \033[0m"
 read -p 'Enter Number : ' server_select
 
 # Define the speedtest server URL
