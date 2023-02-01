@@ -1,6 +1,8 @@
 #!/bin/bash
 
 # Define the speedtest server URL
+# curl -o /dev/null --upload-file /dev/zero "http://speedtestapp.mci.ir:8080/upload"
+
 
 echo -e "\033[33mSelect server \033[0m"
 echo -e "\033[36m 1)\033[37m Irancell \033[0m"
