@@ -24,9 +24,6 @@ read -p 'Enter Number : ' server_select
 
 
 # Define the speedtest server URL
-speedtest_server="http://"$myurl"/download"
-ping_server="http://"$myurl"/"
-
 case $server_select in
   1)
     #echo "irancell"
@@ -41,6 +38,8 @@ case $server_select in
 	exit 1;
     ;;
 esac
+speedtest_server="http://"$myurl"/download"
+ping_server="http://"$myurl"/"
 
 sudo ip addr add $sv_ip dev eth0 &> /dev/null
 
