@@ -48,7 +48,7 @@ sudo ip addr add $sv_ip dev eth0 &> /dev/null
 interface=$sv_ip
 
 # Define the number of test iterations
-iterations=2
+iterations=5
 
 # Measure the average download speed
 download_speed=0
