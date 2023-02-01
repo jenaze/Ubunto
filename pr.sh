@@ -38,7 +38,7 @@ ping_server="http://"$myurl"/"
 interface="eth0"
 
 # Define the number of test iterations
-iterations=2
+iterations=5
 
 # Measure the average download speed
 download_speed=0
