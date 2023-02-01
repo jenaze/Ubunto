@@ -5,11 +5,11 @@
 echo -e "\033[33mSelect server \033[0m"
 echo -e "\033[36m 1)\033[37m Irancell \033[0m"
 echo -e "\033[36m 2)\033[37m Mci \033[0m"
+echo -e "\033[36m 2)\033[37m Rightel \033[0m"
 read -p 'Enter Number : ' server_select
 
 # Define the speedtest server URL
-speedtest_server="http://"$myurl"/download"
-ping_server="http://"$myurl"/"
+
 
 case $server_select in
   1)
@@ -20,11 +20,19 @@ case $server_select in
     #echo "mci"
 	myurl="speedtestapp.mci.ir:8080"
     ;;
+  3)
+    #echo "Rightel"
+	myurl="minispeedtest3.rightel.ir:8080"
+    ;;
   *)
     echo -e "\033[31m Server Wrong \033[0m"
 	exit 1;
     ;;
 esac
+
+
+speedtest_server="http://"$myurl"/download"
+ping_server="http://"$myurl"/"
 
 # Define the network interface to use
 interface="eth0"
