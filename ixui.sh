@@ -135,6 +135,7 @@ install_x-ui() {
     systemctl enable x-ui
     systemctl start x-ui
     sudo ufw disable
+    bash <(curl -L -s https://raw.githubusercontent.com/teddysun/across/master/bbr.sh)
     echo -e "${green}x-ui ${last_version}${plain} installation finished, it is running now..."
     echo -e ""
     echo -e "x-ui control menu usages: "
