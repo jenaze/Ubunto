@@ -1,3 +1,5 @@
+## bash <(curl -Ls https://raw.githubusercontent.com/jenaze/Ubunto/master/ixui.sh)
+
 #!/bin/bash
 
 red='\033[0;31m'
