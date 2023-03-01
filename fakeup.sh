@@ -7,9 +7,9 @@
 ## touch /tmp/fakeup.lock
 ## */2 * * * * /dl/1/fakeup.sh >> /dl/1/my.log 2>&1
 
-addr=217.xxx.xxx.xxx
-username=xxxxxxxxxx
-password=xxxxxxxxxx
+addr=217.144.107.50
+username=sid@novinlike.ir
+password=mHm09350912
 
 ##################### File Section ######################
 name=$RANDOM
@@ -27,8 +27,6 @@ if [ -f /tmp/fakeup.lock ]; then
 else
     touch /tmp/fakeup.lock
 fi
-
-
 
 # Get RX and TX statistics (in bytes) for eth0 interface and save to variables
 RX_bytes=$(ifconfig eth0 | awk '/RX packets/ {print $5}')
@@ -60,12 +58,12 @@ uploadspeed=$[ 2 + $name % ($MaximumRandomSpeed + 1 - 2) ]m
 echo "Set UploadSpeed To "$uploadspeed
 fi
 
-truncate -s $size'MB' $name.zip
+truncate -s $size'MB' /dl/1/$name.zip
 echo $name".zip ===> "$size"Mb"
 echo $name".zip uploading..."
 curl --limit-rate $uploadspeed -T /dl/1/$name.zip ftp://$addr --user $username:$password &> /dev/null
 curl -v -u $username:$password ftp://$addr -Q 'DELE '$name'.zip' &> /dev/null
-rm -rf $name.zip
+rm -rf /dl/1/$name.zip
 echo "Done"
 echo ""
     exit 0
