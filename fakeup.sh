@@ -5,7 +5,7 @@
 ## bash <(curl -Ls https://raw.githubusercontent.com/jenaze/Ubunto/master/fakeup.sh)
 ## chmod +x fakeup.sh
 ## touch /tmp/fakeup.lock
-## */2 * * * * /dl/1/fakeup.sh >> /dl/1/my.log 2>&1
+## */2 * * * * /root/dl/1/fakeup.sh >> /root/dl/1/my.log 2>&1
 
 readonly addr=217.144.107.50
 readonly username=sid@novinlike.ir
@@ -33,23 +33,23 @@ LastSavedDl=0
 LastSavedUP=0
 
 
-
 if [ -f /tmp/fakeup.lock ]; then
     exit 0
 else
     touch /tmp/fakeup.lock
 fi
 
-if [ -f "/root/dl/1/info.txt" ]; then
-    LastSavedDl=$(awk 'NR==1{print $1}' /root/dl/1/info.txt)
-    LastSavedUP=$(awk 'NR==2{print $1}' /root/dl/1/info.txt)
-    echo "file_download=$LastSavedDl"
-    echo "file_upload=$LastSavedUP"
-fi
+
+# if [ -f "/root/dl/1/info.txt" ]; then
+#     LastSavedDl=$(awk 'NR==1{print $1}' /root/dl/1/info.txt)
+#     LastSavedUP=$(awk 'NR==2{print $1}' /root/dl/1/info.txt)
+#     echo "file_download=$LastSavedDl"
+#     echo "file_upload=$LastSavedUP"
+# fi
 
 
-RX_bytes=$(ifconfig eth0 | awk '/RX packets/ {print $5}')
-TX_bytes=$(ifconfig eth0 | awk '/TX packets/ {print $5}')
+RX_bytes=$(/usr/sbin/ifconfig eth0 | awk '/RX packets/ {print $5}')
+TX_bytes=$(/usr/sbin/ifconfig eth0 | awk '/TX packets/ {print $5}')
 
 # Convert RX and TX statistics from bytes to megabytes (MB)
 RX=$(echo "scale=2; $RX_bytes/1048576" | bc -l)
