@@ -4,7 +4,6 @@
 ## wget https://raw.githubusercontent.com/jenaze/Ubunto/master/upload/SelfFakeUp.sh
 ## bash <(curl -Ls https://raw.githubusercontent.com/jenaze/Ubunto/master/upload/SelfFakeUp.sh)
 ## chmod +x SelfFakeUp.sh
-## */2 * * * * /root/dl/1/SelfFakeUp.sh >> /root/dl/1/my.log 2>&1
 ## screen -r
 ## Ctrl-a c: Create a new window with a shell in it.
 ## Ctrl-a n: Switch to the next window.
