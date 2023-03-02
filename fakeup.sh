@@ -13,8 +13,9 @@ readonly password=mHm09350912
 
 ##################### File Section ######################
 readonly name=$RANDOM
-readonly x=200
-readonly y=300
+
+readonly MinimumFileSize=200
+readonly MaximumFileSize=300
 
 ##################### Upload Section ######################
 readonly ExteraDownloadMb=0
@@ -65,7 +66,7 @@ echo "should_upload=$SDL"
 
 if awk 'BEGIN {exit !('"$SDL"' > '"$TX"')}'
 then
-    size=$[ $x + $name % ($y + 1 - $x) ]
+    size=$[ $MinimumFileSize + $name % ($MaximumFileSize + 1 - $MinimumFileSize) ]
     
     if $randomSizeUpload
     then
