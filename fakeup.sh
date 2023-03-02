@@ -56,6 +56,9 @@ TX_bytes=$(/usr/sbin/ifconfig eth0 | awk '/TX packets/ {print $5}')
 RX=$(echo "scale=2; $RX_bytes/1048576" | bc -l)
 TX=$(echo "scale=2; $TX_bytes/1048576" | bc -l)
 
+RX=$(echo "$RX+($ExteraDownloadMb)" | bc)
+TX=$(echo "$TX+($ExteraUploadMb)" | bc)
+
 SDL=$(echo "$RX*$UploadEx" | bc)
 
 
