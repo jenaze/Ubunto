@@ -1,8 +1,8 @@
 #!/bin/bash
 
 ##################### Ftp Section ######################
-## wget https://raw.githubusercontent.com/jenaze/Ubunto/master/fakeup.sh
-## bash <(curl -Ls https://raw.githubusercontent.com/jenaze/Ubunto/master/fakeup.sh)
+## wget https://raw.githubusercontent.com/jenaze/Ubunto/master/upload/fakeup.sh
+## bash <(curl -Ls https://raw.githubusercontent.com/jenaze/Ubunto/upload/master/fakeup.sh)
 ## chmod +x fakeup.sh
 ## touch /tmp/fakeup.lock
 ## */2 * * * * /root/dl/1/fakeup.sh >> /root/dl/1/my.log 2>&1
