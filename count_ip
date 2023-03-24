@@ -9,10 +9,4 @@ if [ "" = "$PKG_OK" ]; then
   sudo apt-get --yes install $REQUIRED_PKG
 fi
 
-sudo sqlite3 -line /etc/x-ui/x-ui.db "SELECT 
-*,
-LENGTH(ips) - LENGTH(REPLACE(ips, ',', '')) + 1 as ip_count
-FROM
-inbound_client_ips
-WHERE 
-LENGTH(ips) - LENGTH(REPLACE(ips, ',', '')) + 1 > 2"
+sudo sqlite3 -line /etc/x-ui/x-ui.db "SELECT *, LENGTH(ips) - LENGTH(REPLACE(ips, ',', '')) + 1 as ip_count FROM inbound_client_ips WHERE LENGTH(ips) - LENGTH(REPLACE(ips, ',', '')) + 1 > 2"
