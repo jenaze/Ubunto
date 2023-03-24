@@ -1,5 +1,7 @@
 #!/bin/bash
 
+## bash <(curl -Ls https://raw.githubusercontent.com/jenaze/Ubunto/master/count_ip.sh)
+
 # Check for root privilege
 if [[ $EUID -ne 0 ]]; then
   echo "This script must be run as root"
