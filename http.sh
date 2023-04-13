@@ -1,4 +1,4 @@
-# bash <(curl -Ls https://raw.githubusercontent.com/jenaze/Ubunto/master/port.sh)
+# bash <(curl -Ls https://raw.githubusercontent.com/jenaze/Ubunto/master/http.sh)
 REQUIRED_PKG="apache2"
 PKG_OK=$(dpkg-query -W --showformat='${Status}\n' $REQUIRED_PKG|grep "install ok installed")
 #echo Checking for $REQUIRED_PKG: $PKG_OK
@@ -8,9 +8,7 @@ if [ "" = "$PKG_OK" ]; then
 fi
 
 cat <<EOF > /var/www/html/index.html
+ok
 EOF
 
-portlocation=/etc/apache2/ports.conf
-sudo sed -i 's/80/81/' $portlocation
-sudo sed -i 's/443/444/' $portlocation
 sudo systemctl restart apache2
