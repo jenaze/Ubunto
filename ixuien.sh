@@ -1,4 +1,4 @@
-## bash <(curl -Ls https://raw.githubusercontent.com/jenaze/Ubunto/master/ixui.sh)
+## bash <(curl -Ls https://raw.githubusercontent.com/jenaze/Ubunto/master/ixuien.sh)
 
 #!/bin/bash
 
