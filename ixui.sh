@@ -87,6 +87,54 @@ config_after_install() {
         /usr/local/x-ui/x-ui setting -port 8080
 }
 
+
+enable_bbr() {
+    if grep -q "net.core.default_qdisc=fq" /etc/sysctl.conf && grep -q "net.ipv4.tcp_congestion_control=bbr" /etc/sysctl.conf; then
+        echo -e "${green}BBR is already enabled!${plain}"
+        exit 0
+    fi
+
+    # Check the OS and install necessary packages
+    if [[ "$(cat /etc/os-release | grep -E '^ID=' | awk -F '=' '{print $2}')" == "ubuntu" ]]; then
+        sudo apt-get update && sudo apt-get install -yqq --no-install-recommends ca-certificates
+    elif [[ "$(cat /etc/os-release | grep -E '^ID=' | awk -F '=' '{print $2}')" == "debian" ]]; then
+        sudo apt-get update && sudo apt-get install -yqq --no-install-recommends ca-certificates
+    elif [[ "$(cat /etc/os-release | grep -E '^ID=' | awk -F '=' '{print $2}')" == "fedora" ]]; then
+        sudo dnf -y update && sudo dnf -y install ca-certificates
+    elif [[ "$(cat /etc/os-release | grep -E '^ID=' | awk -F '=' '{print $2}')" == "centos" ]]; then
+        sudo yum -y update && sudo yum -y install ca-certificates
+    else
+        echo "Unsupported operating system. Please check the script and install the necessary packages manually."
+        exit 1
+    fi
+
+    # Enable BBR
+    echo "net.core.default_qdisc=fq" | sudo tee -a /etc/sysctl.conf
+    echo "net.ipv4.tcp_congestion_control=bbr" | sudo tee -a /etc/sysctl.conf
+
+    # Apply changes
+    sudo sysctl -p
+
+    # Verify that BBR is enabled
+    if [[ $(sysctl net.ipv4.tcp_congestion_control | awk '{print $3}') == "bbr" ]]; then
+        echo -e "${green}BBR has been enabled successfully.${plain}"
+    else
+        echo -e "${red}Failed to enable BBR. Please check your system configuration.${plain}"
+    fi
+}
+
+update_shell() {
+    wget -O /usr/bin/x-ui -N --no-check-certificate https://github.com/MHSanaei/3x-ui/raw/main/x-ui.sh
+    if [[ $? != 0 ]]; then
+        echo ""
+        LOGE "Failed to download script, Please check whether the machine can connect Github"
+        before_show_menu
+    else
+        chmod +x /usr/bin/x-ui
+        LOGI "Upgrade script succeeded, Please rerun the script" && exit 0
+    fi
+}
+
 install_x-ui() {
     systemctl stop x-ui
     cd /usr/local/
@@ -137,7 +185,6 @@ install_x-ui() {
     systemctl enable x-ui
     systemctl start x-ui
     sudo ufw disable
-    bash <(curl -L -s https://raw.githubusercontent.com/teddysun/across/master/bbr.sh)
     echo -e "${green}x-ui ${last_version}${plain} installation finished, it is running now..."
     echo -e ""
     echo -e "x-ui control menu usages: "
@@ -159,3 +206,4 @@ install_x-ui() {
 echo -e "${green}Running...${plain}"
 install_base
 install_x-ui $1
+enable_bbr
