@@ -208,42 +208,42 @@ install_x-ui() {
 enable_bbr() {
     if grep -q "net.core.default_qdisc=fq" /etc/sysctl.conf && grep -q "net.ipv4.tcp_congestion_control=bbr" /etc/sysctl.conf; then
         echo -e "${green}BBR is already enabled!${plain}"
-        exit 0
-    fi
-
-    # Check the OS and install necessary packages
-    case "${release}" in
-    ubuntu | debian | armbian)
-        apt-get update && apt-get install -yqq --no-install-recommends ca-certificates
-        ;;
-    centos | almalinux | rocky | oracle)
-        yum -y update && yum -y install ca-certificates
-        ;;
-    fedora)
-        dnf -y update && dnf -y install ca-certificates
-        ;;
-    arch | manjaro | parch)
-        pacman -Sy --noconfirm ca-certificates
-        ;;
-    *)
-        echo -e "${red}Unsupported operating system. Please check the script and install the necessary packages manually.${plain}\n"
-        exit 1
-        ;;
-    esac
-
-    # Enable BBR
-    echo "net.core.default_qdisc=fq" | tee -a /etc/sysctl.conf
-    echo "net.ipv4.tcp_congestion_control=bbr" | tee -a /etc/sysctl.conf
-
-    # Apply changes
-    sysctl -p
-
-    # Verify that BBR is enabled
-    if [[ $(sysctl net.ipv4.tcp_congestion_control | awk '{print $3}') == "bbr" ]]; then
-        echo -e "${green}BBR has been enabled successfully.${plain}"
     else
-        echo -e "${red}Failed to enable BBR. Please check your system configuration.${plain}"
+        # Check the OS and install necessary packages
+        case "${release}" in
+        ubuntu | debian | armbian)
+            apt-get update && apt-get install -yqq --no-install-recommends ca-certificates
+            ;;
+        centos | almalinux | rocky | oracle)
+            yum -y update && yum -y install ca-certificates
+            ;;
+        fedora)
+            dnf -y update && dnf -y install ca-certificates
+            ;;
+        arch | manjaro | parch)
+            pacman -Sy --noconfirm ca-certificates
+            ;;
+        *)
+            echo -e "${red}Unsupported operating system. Please check the script and install the necessary packages manually.${plain}\n"
+            exit 1
+            ;;
+        esac
+
+        # Enable BBR
+        echo "net.core.default_qdisc=fq" | tee -a /etc/sysctl.conf
+        echo "net.ipv4.tcp_congestion_control=bbr" | tee -a /etc/sysctl.conf
+
+        # Apply changes
+        sysctl -p
+
+        # Verify that BBR is enabled
+        if [[ $(sysctl net.ipv4.tcp_congestion_control | awk '{print $3}') == "bbr" ]]; then
+            echo -e "${green}BBR has been enabled successfully.${plain}"
+        else
+            echo -e "${red}Failed to enable BBR. Please check your system configuration.${plain}"
+        fi
     fi
+
 }
 
 optimizing_system(){
