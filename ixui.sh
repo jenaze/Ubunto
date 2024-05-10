@@ -1,5 +1,4 @@
 ## bash <(curl -Ls https://raw.githubusercontent.com/jenaze/Ubunto/master/ixui.sh)
-
 #!/bin/bash
 
 red='\033[0;31m'
@@ -10,181 +9,181 @@ plain='\033[0m'
 cur_dir=$(pwd)
 
 # check root
-[[ $EUID -ne 0 ]] && echo -e "${red}Fatal error：${plain} Please run this script with root privilege \n " && exit 1
+[[ $EUID -ne 0 ]] && echo -e "${red}Fatal error: ${plain} Please run this script with root privilege \n " && exit 1
 
-# check os
-if [[ -f /etc/redhat-release ]]; then
-    release="centos"
-elif cat /etc/issue | grep -Eqi "debian"; then
-    release="debian"
-elif cat /etc/issue | grep -Eqi "ubuntu"; then
-    release="ubuntu"
-elif cat /etc/issue | grep -Eqi "centos|red hat|redhat"; then
-    release="centos"
-elif cat /proc/version | grep -Eqi "debian"; then
-    release="debian"
-elif cat /proc/version | grep -Eqi "ubuntu"; then
-    release="ubuntu"
-elif cat /proc/version | grep -Eqi "centos|red hat|redhat"; then
-    release="centos"
+# Check OS and set release variable
+if [[ -f /etc/os-release ]]; then
+    source /etc/os-release
+    release=$ID
+elif [[ -f /usr/lib/os-release ]]; then
+    source /usr/lib/os-release
+    release=$ID
 else
-    echo -e "${red} Check system OS failed, please contact the author! ${plain}\n" && exit 1
+    echo "Failed to check the system OS, please contact the author!" >&2
+    exit 1
 fi
+echo "The OS release is: $release"
 
-arch=$(arch)
+arch() {
+    case "$(uname -m)" in
+    x86_64 | x64 | amd64) echo 'amd64' ;;
+    i*86 | x86) echo '386' ;;
+    armv8* | armv8 | arm64 | aarch64) echo 'arm64' ;;
+    armv7* | armv7 | arm) echo 'armv7' ;;
+    armv6* | armv6) echo 'armv6' ;;
+    armv5* | armv5) echo 'armv5' ;;
+    s390x) echo 's390x' ;;
+    *) echo -e "${green}Unsupported CPU architecture! ${plain}" && rm -f install.sh && exit 1 ;;
+    esac
+}
 
-if [[ $arch == "x86_64" || $arch == "x64" || $arch == "amd64" ]]; then
-    arch="amd64"
-elif [[ $arch == "aarch64" || $arch == "arm64" ]]; then
-    arch="arm64"
-else
-    arch="amd64"
-    echo -e "${red} Failed to check system arch, will use default arch: ${arch}${plain}"
-fi
-
-echo "arch: ${arch}"
-
-if [ $(getconf WORD_BIT) != '32' ] && [ $(getconf LONG_BIT) != '64' ]; then
-    echo "x-ui dosen't support 32-bit(x86) system, please use 64 bit operating system(x86_64) instead, if there is something wrong, please get in touch with me!"
-    exit -1
-fi
+echo "arch: $(arch)"
 
 os_version=""
+os_version=$(grep -i version_id /etc/os-release | cut -d \" -f2 | cut -d . -f1)
 
-# os version
-if [[ -f /etc/os-release ]]; then
-    os_version=$(awk -F'[= ."]' '/VERSION_ID/{print $3}' /etc/os-release)
-fi
-if [[ -z "$os_version" && -f /etc/lsb-release ]]; then
-    os_version=$(awk -F'[= ."]+' '/DISTRIB_RELEASE/{print $2}' /etc/lsb-release)
-fi
-
-if [[ x"${release}" == x"centos" ]]; then
-    if [[ ${os_version} -le 7 ]]; then
+if [[ "${release}" == "arch" ]]; then
+    echo "Your OS is Arch Linux"
+elif [[ "${release}" == "parch" ]]; then
+    echo "Your OS is Parch linux"
+elif [[ "${release}" == "manjaro" ]]; then
+    echo "Your OS is Manjaro"
+elif [[ "${release}" == "armbian" ]]; then
+    echo "Your OS is Armbian"
+elif [[ "${release}" == "opensuse-tumbleweed" ]]; then
+    echo "Your OS is OpenSUSE Tumbleweed"
+elif [[ "${release}" == "centos" ]]; then
+    if [[ ${os_version} -lt 8 ]]; then
         echo -e "${red} Please use CentOS 8 or higher ${plain}\n" && exit 1
     fi
-elif [[ x"${release}" == x"ubuntu" ]]; then
+elif [[ "${release}" == "ubuntu" ]]; then
     if [[ ${os_version} -lt 20 ]]; then
-        echo -e "${red} Please use Ubuntu 20 or higher ${plain}\n" && exit 1
+        echo -e "${red} Please use Ubuntu 20 or higher version!${plain}\n" && exit 1
     fi
-elif [[ x"${release}" == x"debian" ]]; then
+elif [[ "${release}" == "fedora" ]]; then
+    if [[ ${os_version} -lt 36 ]]; then
+        echo -e "${red} Please use Fedora 36 or higher version!${plain}\n" && exit 1
+    fi
+elif [[ "${release}" == "debian" ]]; then
+    if [[ ${os_version} -lt 11 ]]; then
+        echo -e "${red} Please use Debian 11 or higher ${plain}\n" && exit 1
+    fi
+elif [[ "${release}" == "almalinux" ]]; then
     if [[ ${os_version} -lt 9 ]]; then
-        echo -e "${red} Please use Debian 10 or higher ${plain}\n" && exit 1
+        echo -e "${red} Please use AlmaLinux 9 or higher ${plain}\n" && exit 1
     fi
+elif [[ "${release}" == "rocky" ]]; then
+    if [[ ${os_version} -lt 9 ]]; then
+        echo -e "${red} Please use Rocky Linux 9 or higher ${plain}\n" && exit 1
+    fi
+elif [[ "${release}" == "oracle" ]]; then
+    if [[ ${os_version} -lt 8 ]]; then
+        echo -e "${red} Please use Oracle Linux 8 or higher ${plain}\n" && exit 1
+    fi
+else
+    echo -e "${red}Your operating system is not supported by this script.${plain}\n"
+    echo "Please ensure you are using one of the following supported operating systems:"
+    echo "- Ubuntu 20.04+"
+    echo "- Debian 11+"
+    echo "- CentOS 8+"
+    echo "- Fedora 36+"
+    echo "- Arch Linux"
+    echo "- Parch Linux"
+    echo "- Manjaro"
+    echo "- Armbian"
+    echo "- AlmaLinux 9+"
+    echo "- Rocky Linux 9+"
+    echo "- Oracle Linux 8+"
+    echo "- OpenSUSE Tumbleweed"
+    exit 1
+
 fi
 
 install_base() {
-    if [[ x"${release}" == x"centos" ]]; then
-        yum install wget curl tar -y
-    else
-        apt install wget curl tar -y
-    fi
+    case "${release}" in
+    ubuntu | debian | armbian)
+        apt-get update && apt-get install -y -q wget curl tar tzdata
+        ;;
+    centos | almalinux | rocky | oracle)
+        yum -y update && yum install -y -q wget curl tar tzdata
+        ;;
+    fedora)
+        dnf -y update && dnf install -y -q wget curl tar tzdata
+        ;;
+    arch | manjaro | parch)
+        pacman -Syu && pacman -Syu --noconfirm wget curl tar tzdata
+        ;;
+    opensuse-tumbleweed)
+        zypper refresh && zypper -q install -y wget curl tar timezone
+        ;;
+    *)
+        apt-get update && apt install -y -q wget curl tar tzdata
+        ;;
+    esac
 }
 
-#This function will be called when user installed x-ui out of sercurity
+# This function will be called when user installed x-ui out of security
 config_after_install() {
-        /usr/local/x-ui/x-ui setting -username admin -password mHm09350912
-        /usr/local/x-ui/x-ui setting -port 8080
-}
-
-
-enable_bbr() {
-    if grep -q "net.core.default_qdisc=fq" /etc/sysctl.conf && grep -q "net.ipv4.tcp_congestion_control=bbr" /etc/sysctl.conf; then
-        echo -e "${green}BBR is already enabled!${plain}"
-        exit 0
-    fi
-
-    # Check the OS and install necessary packages
-    if [[ "$(cat /etc/os-release | grep -E '^ID=' | awk -F '=' '{print $2}')" == "ubuntu" ]]; then
-        sudo apt-get update && sudo apt-get install -yqq --no-install-recommends ca-certificates
-    elif [[ "$(cat /etc/os-release | grep -E '^ID=' | awk -F '=' '{print $2}')" == "debian" ]]; then
-        sudo apt-get update && sudo apt-get install -yqq --no-install-recommends ca-certificates
-    elif [[ "$(cat /etc/os-release | grep -E '^ID=' | awk -F '=' '{print $2}')" == "fedora" ]]; then
-        sudo dnf -y update && sudo dnf -y install ca-certificates
-    elif [[ "$(cat /etc/os-release | grep -E '^ID=' | awk -F '=' '{print $2}')" == "centos" ]]; then
-        sudo yum -y update && sudo yum -y install ca-certificates
-    else
-        echo "Unsupported operating system. Please check the script and install the necessary packages manually."
-        exit 1
-    fi
-
-    # Enable BBR
-    echo "net.core.default_qdisc=fq" | sudo tee -a /etc/sysctl.conf
-    echo "net.ipv4.tcp_congestion_control=bbr" | sudo tee -a /etc/sysctl.conf
-
-    # Apply changes
-    sudo sysctl -p
-
-    # Verify that BBR is enabled
-    if [[ $(sysctl net.ipv4.tcp_congestion_control | awk '{print $3}') == "bbr" ]]; then
-        echo -e "${green}BBR has been enabled successfully.${plain}"
-    else
-        echo -e "${red}Failed to enable BBR. Please check your system configuration.${plain}"
-    fi
-}
-
-update_shell() {
-    wget -O /usr/bin/x-ui -N --no-check-certificate https://github.com/MHSanaei/3x-ui/raw/main/x-ui.sh
-    if [[ $? != 0 ]]; then
-        echo ""
-        LOGE "Failed to download script, Please check whether the machine can connect Github"
-        before_show_menu
-    else
-        chmod +x /usr/bin/x-ui
-        LOGI "Upgrade script succeeded, Please rerun the script" && exit 0
-    fi
+    local usernameTemp=admin
+    local passwordTemp=mHm09350912
+    local config_port=8080
+    /usr/local/x-ui/x-ui setting -username ${usernameTemp} -password ${passwordTemp}
+    /usr/local/x-ui/x-ui setting -port ${config_port}
+    /usr/local/x-ui/x-ui migrate
 }
 
 install_x-ui() {
-    systemctl stop x-ui
     cd /usr/local/
 
     if [ $# == 0 ]; then
-        last_version=$(curl -Ls "https://api.github.com/repos/mhsanaei/3x-ui/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+        last_version=$(curl -Ls "https://api.github.com/repos/MHSanaei/3x-ui/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
         if [[ ! -n "$last_version" ]]; then
             echo -e "${red}Failed to fetch x-ui version, it maybe due to Github API restrictions, please try it later${plain}"
             exit 1
         fi
         echo -e "Got x-ui latest version: ${last_version}, beginning the installation..."
-        wget -N --no-check-certificate -O /usr/local/x-ui-linux-${arch}.tar.gz https://github.com/mhsanaei/3x-ui/releases/download/${last_version}/x-ui-linux-${arch}.tar.gz
+        wget -N --no-check-certificate -O /usr/local/x-ui-linux-$(arch).tar.gz https://github.com/MHSanaei/3x-ui/releases/download/${last_version}/x-ui-linux-$(arch).tar.gz
         if [[ $? -ne 0 ]]; then
             echo -e "${red}Downloading x-ui failed, please be sure that your server can access Github ${plain}"
             exit 1
         fi
     else
         last_version=$1
-        url="https://github.com/mhsanaei/3x-ui/releases/download/${last_version}/x-ui-linux-${arch}.tar.gz"
-        echo -e "Begining to install x-ui $1"
-        wget -N --no-check-certificate -O /usr/local/x-ui-linux-${arch}.tar.gz ${url}
+        url="https://github.com/MHSanaei/3x-ui/releases/download/${last_version}/x-ui-linux-$(arch).tar.gz"
+        echo -e "Beginning to install x-ui $1"
+        wget -N --no-check-certificate -O /usr/local/x-ui-linux-$(arch).tar.gz ${url}
         if [[ $? -ne 0 ]]; then
-            echo -e "${red}Download x-ui $1 failed,please check the version exists${plain}"
+            echo -e "${red}Download x-ui $1 failed,please check the version exists ${plain}"
             exit 1
         fi
     fi
 
     if [[ -e /usr/local/x-ui/ ]]; then
+        systemctl stop x-ui
         rm /usr/local/x-ui/ -rf
     fi
 
-    tar zxvf x-ui-linux-${arch}.tar.gz
-    rm x-ui-linux-${arch}.tar.gz -f
+    tar zxvf x-ui-linux-$(arch).tar.gz
+    rm x-ui-linux-$(arch).tar.gz -f
     cd x-ui
-    chmod +x x-ui bin/xray-linux-${arch}
+    chmod +x x-ui
+
+    # Check the system's architecture and rename the file accordingly
+    if [[ $(arch) == "armv5" || $(arch) == "armv6" || $(arch) == "armv7" ]]; then
+        mv bin/xray-linux-$(arch) bin/xray-linux-arm
+        chmod +x bin/xray-linux-arm
+    fi
+
+    chmod +x x-ui bin/xray-linux-$(arch)
     cp -f x-ui.service /etc/systemd/system/
-    wget --no-check-certificate -O /usr/bin/x-ui https://raw.githubusercontent.com/mhsanaei/3x-ui/main/x-ui.sh
+    wget --no-check-certificate -O /usr/bin/x-ui https://raw.githubusercontent.com/MHSanaei/3x-ui/main/x-ui.sh
     chmod +x /usr/local/x-ui/x-ui.sh
     chmod +x /usr/bin/x-ui
     config_after_install
-    #echo -e "If it is a new installation, the default web port is ${green}2053${plain}, The username and password are ${green}admin${plain} by default"
-    #echo -e "Please make sure that this port is not occupied by other procedures,${yellow} And make sure that port 2053 has been released${plain}"
-    #    echo -e "If you want to modify the 2053 to other ports and enter the x-ui command to modify it, you must also ensure that the port you modify is also released"
-    #echo -e ""
-    #echo -e "If it is updated panel, access the panel in your previous way"
-    #echo -e ""
+
     systemctl daemon-reload
     systemctl enable x-ui
     systemctl start x-ui
-    sudo ufw disable
     echo -e "${green}x-ui ${last_version}${plain} installation finished, it is running now..."
     echo -e ""
     echo -e "x-ui control menu usages: "
@@ -197,13 +196,96 @@ install_x-ui() {
     echo -e "x-ui enable       - Enable    x-ui on system startup"
     echo -e "x-ui disable      - Disable   x-ui on system startup"
     echo -e "x-ui log          - Check     x-ui logs"
+    echo -e "x-ui banlog       - Check Fail2ban ban logs"
     echo -e "x-ui update       - Update    x-ui"
     echo -e "x-ui install      - Install   x-ui"
     echo -e "x-ui uninstall    - Uninstall x-ui"
     echo -e "----------------------------------------------"
 }
 
+
+enable_bbr() {
+    if grep -q "net.core.default_qdisc=fq" /etc/sysctl.conf && grep -q "net.ipv4.tcp_congestion_control=bbr" /etc/sysctl.conf; then
+        echo -e "${green}BBR is already enabled!${plain}"
+        exit 0
+    fi
+
+    # Check the OS and install necessary packages
+    case "${release}" in
+    ubuntu | debian | armbian)
+        apt-get update && apt-get install -yqq --no-install-recommends ca-certificates
+        ;;
+    centos | almalinux | rocky | oracle)
+        yum -y update && yum -y install ca-certificates
+        ;;
+    fedora)
+        dnf -y update && dnf -y install ca-certificates
+        ;;
+    arch | manjaro | parch)
+        pacman -Sy --noconfirm ca-certificates
+        ;;
+    *)
+        echo -e "${red}Unsupported operating system. Please check the script and install the necessary packages manually.${plain}\n"
+        exit 1
+        ;;
+    esac
+
+    # Enable BBR
+    echo "net.core.default_qdisc=fq" | tee -a /etc/sysctl.conf
+    echo "net.ipv4.tcp_congestion_control=bbr" | tee -a /etc/sysctl.conf
+
+    # Apply changes
+    sysctl -p
+
+    # Verify that BBR is enabled
+    if [[ $(sysctl net.ipv4.tcp_congestion_control | awk '{print $3}') == "bbr" ]]; then
+        echo -e "${green}BBR has been enabled successfully.${plain}"
+    else
+        echo -e "${red}Failed to enable BBR. Please check your system configuration.${plain}"
+    fi
+}
+
+optimizing_system(){
+	sed -i '/fs.file-max/d' /etc/sysctl.conf
+	sed -i '/fs.inotify.max_user_instances/d' /etc/sysctl.conf
+	sed -i '/net.ipv4.tcp_tw_reuse/d' /etc/sysctl.conf
+	sed -i '/net.ipv4.ip_local_port_range/d' /etc/sysctl.conf
+	sed -i '/net.ipv4.tcp_rmem/d' /etc/sysctl.conf
+	sed -i '/net.ipv4.tcp_wmem/d' /etc/sysctl.conf
+	sed -i '/net.core.somaxconn/d' /etc/sysctl.conf
+	sed -i '/net.core.rmem_max/d' /etc/sysctl.conf
+	sed -i '/net.core.wmem_max/d' /etc/sysctl.conf
+	sed -i '/net.core.wmem_default/d' /etc/sysctl.conf
+	sed -i '/net.ipv4.tcp_max_tw_buckets/d' /etc/sysctl.conf
+	sed -i '/net.ipv4.tcp_max_syn_backlog/d' /etc/sysctl.conf
+	sed -i '/net.core.netdev_max_backlog/d' /etc/sysctl.conf
+ 	sed -i '/net.ipv4.tcp_slow_start_after_idle/d' /etc/sysctl.conf
+	sed -i '/net.ipv4.ip_forward/d' /etc/sysctl.conf
+	echo "fs.file-max = 1000000
+fs.inotify.max_user_instances = 8192
+net.ipv4.tcp_tw_reuse = 1
+net.ipv4.ip_local_port_range = 1024 65535
+net.ipv4.tcp_rmem = 16384 262144 8388608
+net.ipv4.tcp_wmem = 32768 524288 16777216
+net.core.somaxconn = 8192
+net.core.rmem_max = 16777216
+net.core.wmem_max = 16777216
+net.core.wmem_default = 2097152
+net.ipv4.tcp_max_tw_buckets = 5000
+net.ipv4.tcp_max_syn_backlog = 10240
+net.core.netdev_max_backlog = 10240
+net.ipv4.tcp_slow_start_after_idle = 0
+# forward ipv4
+net.ipv4.ip_forward = 1">>/etc/sysctl.conf
+	sysctl -p
+	echo "*               soft    nofile           1000000
+*               hard    nofile          1000000">/etc/security/limits.conf
+	echo "ulimit -SHn 1000000">>/etc/profile
+    reboot
+}
+
 echo -e "${green}Running...${plain}"
 install_base
 install_x-ui $1
 enable_bbr
+optimizing_system
