@@ -281,6 +281,12 @@ net.ipv4.ip_forward = 1">>/etc/sysctl.conf
 	echo "*               soft    nofile           1000000
 *               hard    nofile          1000000">/etc/security/limits.conf
 	echo "ulimit -SHn 1000000">>/etc/profile
+	# read -p "After restarting the VPS, the system can be optimized and configured, if it is restarted now ? [Y/n] :" yn
+	# [ -z "${yn}" ] && yn="y"
+	# if [[ $yn == [Yy] ]]; then
+	# 	echo -e "${Info} VPS Reboot..."
+	# 	reboot
+	# fi
     reboot
 }
 
