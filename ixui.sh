@@ -293,5 +293,3 @@ net.ipv4.ip_forward = 1">>/etc/sysctl.conf
 echo -e "${green}Running...${plain}"
 install_base
 install_x-ui $1
-enable_bbr
-optimizing_system
