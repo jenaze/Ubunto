@@ -11,7 +11,7 @@
 # • تخصیص IRQ affinity به یک هستهٔ CPU برای ثبات بیشتر
 #
 # نحوهٔ استفاده:
-#   curl -fsSL https://raw.githubusercontent.com/jenaze/ubuntu/main/optimize.sh | sudo bash
+#   curl -fsSL https://raw.githubusercontent.com/jenaze/Ubunto/main/optimize.sh | sudo bash
 #
 # توضیحات:
 #   • اگر سرور از cake پشتیبانی نکند، خودکار fq_codel جایگزین می‌شود.
